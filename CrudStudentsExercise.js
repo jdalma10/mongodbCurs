@@ -24,3 +24,6 @@ printjson(db.students.updateMany( { major: "Biology" }, { $set: { status: "activ
 //Delete multiple students with deleteMany instruction
 print("Deleting multiples students with deleteMany instruction") 
 printjson(db.students.deleteMany({ gpa: { $eq: 3.2 } } ) )
+//drop students collection 
+print("drop students collection") 
+printjson(db.students.drop())

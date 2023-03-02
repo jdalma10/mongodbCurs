@@ -9,6 +9,22 @@
 	"item": [
 		{
 			"name": "Insert Document",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status test\", function () { \r",
+							"    pm.response.to.have.status(201); }); \r",
+							"\r",
+							"pm.test(\"insertedId is a string\", () => { const responseJson = pm.response.json(); pm.expect(responseJson.insertedId).to.be.a('string'); });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -45,6 +61,25 @@
 		},
 		{
 			"name": "Find Document",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {\r",
+							"     pm.response.to.have.status(200);\r",
+							"      }\r",
+							"    ); \r",
+							"pm.test(\"Body contains name field\",() => {\r",
+							"     pm.expect(pm.response.text()).to.include(\"name\"); \r",
+							"     }\r",
+							"     );\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -86,6 +121,26 @@
 		},
 		{
 			"name": "Update Document",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {\r",
+							"     pm.response.to.have.status(200);\r",
+							"      }\r",
+							"    );\r",
+							"\r",
+							" pm.test(\"Body contains matchedCount field\",() => { \r",
+							"     pm.expect(pm.response.text()).to.include(\"matchedCount\");\r",
+							"      }\r",
+							"    );\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -122,6 +177,25 @@
 		},
 		{
 			"name": "Delete Document",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {\r",
+							"     pm.response.to.have.status(200); \r",
+							"     }\r",
+							"); \r",
+							"pm.test(\"Body contains deletedCount field\",() => {\r",
+							"     pm.expect(pm.response.text()).to.include(\"deletedCount\");\r",
+							"      }\r",
+							"    );\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -158,6 +232,25 @@
 		},
 		{
 			"name": "Insert Multiple Documents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () { \r",
+							"    pm.response.to.have.status(201); }\r",
+							"    ); \r",
+							"\r",
+							"pm.test(\"Body contains insertedIds field\",() => {\r",
+							"    pm.expect(pm.response.text()).to.include(\"insertedIds\"); \r",
+							"    }\r",
+							");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -194,6 +287,18 @@
 		},
 		{
 			"name": "Find Multiple Documents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () { pm.response.to.have.status(200); }); pm.test(\"Body contains insertedIds field\",() => { pm.expect(pm.response.text()).to.include(\"documents\"); });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -235,6 +340,18 @@
 		},
 		{
 			"name": "Update Multiple Documents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () { pm.response.to.have.status(200); }); pm.test(\"Body contains matchedCount field\",() => { pm.expect(pm.response.text()).to.include(\"matchedCount\"); });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -270,7 +387,72 @@
 			"response": []
 		},
 		{
+			"name": "Run Aggregation Pipeline",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () { pm.response.to.have.status(200); }); pm.test(\"Body contains documents field\",() => { pm.expect(pm.response.text()).to.include(\"documents\"); });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/{{CONTENT_TYPE}}"
+					},
+					{
+						"key": "Access-Control-Request-Headers",
+						"value": "*"
+					},
+					{
+						"key": "api-key",
+						"value": "{{API_KEY}}"
+					},
+					{
+						"key": "Accept",
+						"value": "application/{{CONTENT_TYPE}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"dataSource\": \"{{DATA_SOURCE}}\", \"database\": \"{{DATABASE}}\", \"collection\": \"{{COLLECTION}}\", \"pipeline\": [ { \"$sort\": { \"name\": 1 } }, { \"$limit\": 1 } ] }\n"
+				},
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/action/aggregate",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"action",
+						"aggregate"
+					]
+				},
+				"description": "You can even run [aggregation pipelines](https://docs.mongodb.com/manual/core/aggregation-pipeline/) with the Data API. To do so, use the `/aggregate` endpoint and specify your pipeline in the `pipeline` field of the request body."
+			},
+			"response": []
+		},
+		{
 			"name": "Delete Many Documents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () { pm.response.to.have.status(200); }); pm.test(\"Body contains deletedCount field\",() => { pm.expect(pm.response.text()).to.include(\"deletedCount\"); });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -302,47 +484,6 @@
 					]
 				},
 				"description": "You can use `/deleteMany` to delete multiple documents at once. Use the `filter` property to specify which documents to delete.  \n  \n**Warning**: Using `filter: { }` will delete all the documents in the collection. Use `/deleteMany` with care."
-			},
-			"response": []
-		},
-		{
-			"name": "Run Aggregation Pipeline",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/{{CONTENT_TYPE}}"
-					},
-					{
-						"key": "Access-Control-Request-Headers",
-						"value": "*"
-					},
-					{
-						"key": "api-key",
-						"value": "{{API_KEY}}"
-					},
-					{
-						"key": "Accept",
-						"value": "application/{{CONTENT_TYPE}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n      \"dataSource\": \"{{DATA_SOURCE}}\",\n      \"database\": \"{{DATABASE}}\",\n      \"collection\": \"{{COLLECTION}}\",\n      \"pipeline\": [\n          {\n              \"$sort\": { \"age\": 1 }\n          },\n          {\n              \"$limit\": 1\n          }\n      ]\n  }"
-				},
-				"url": {
-					"raw": "{{URL_ENDPOINT}}/action/aggregate",
-					"host": [
-						"{{URL_ENDPOINT}}"
-					],
-					"path": [
-						"action",
-						"aggregate"
-					]
-				},
-				"description": "You can even run [aggregation pipelines](https://docs.mongodb.com/manual/core/aggregation-pipeline/) with the Data API. To do so, use the `/aggregate` endpoint and specify your pipeline in the `pipeline` field of the request body."
 			},
 			"response": []
 		}

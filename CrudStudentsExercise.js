@@ -1,4 +1,4 @@
-//Find all students print("Find all students") 
+//Find all students print("Find all students")  
 printjson(db.students.find({})) 
 print("Find all students and limit to one student ") 
 printjson(db.students.find({}).limit(1)) 
